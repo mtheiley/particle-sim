@@ -115,16 +115,16 @@ opengl::UniformID opengl::getUniformId(std::string uniformName) {
     return glGetUniformLocation(currentlySelectedShader, uniformName.c_str()); 
 }
 
-void opengl::setUniformHelper(opengl::UniformID uniformId, float(&values)[4]) {
-    glUniform4fv(uniformId, 1, values);
+void opengl::setUniformHelper(opengl::UniformID uniformId, std::array<float, 4> values) {
+    glUniform4fv(uniformId, 1, &values[0]);
 }
 
-void opengl::setUniformHelper(opengl::UniformID uniformId, float(&values)[3]) {
-    glUniform3fv(uniformId, 1, values);
+void opengl::setUniformHelper(opengl::UniformID uniformId, std::array<float, 3> values) {
+    glUniform3fv(uniformId, 1, &values[0]);
 }
 
-void opengl::setUniformHelper(opengl::UniformID uniformId, float(&values)[2]) {
-    glUniform2fv(uniformId, 1, values);
+void opengl::setUniformHelper(opengl::UniformID uniformId, std::array<float, 2> values) {
+    glUniform2fv(uniformId, 1, &values[0]);
 }
 
 void opengl::setUniformHelper(opengl::UniformID uniformId, float value) {

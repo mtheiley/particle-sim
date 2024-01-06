@@ -9,6 +9,8 @@
 #include "drawable.hpp"
 #include "mesh.hpp"
 #include "mesh_generator.hpp"
+#include "particle.hpp"
+#include "collision.hpp"
 
 int main() {
 
@@ -29,27 +31,45 @@ int main() {
 
     Mesh mesh4 = mesh_generate::create_polygon(0.2, 10);
     
-    Drawable polygon1(mesh4);
-    Drawable polygon2(mesh4);
-    polygon1.setPosition({0.0f, 1.0f, 0.0f});
-    polygon2.setPosition({1.0f, 0.0f, 0.0f});
+    //Drawable polygon1(mesh4);
+    //Drawable polygon2(mesh4);
+    //polygon1.setPosition({0.0f, 1.0f, 0.0f});
+    //polygon2.setPosition({1.0f, 0.0f, 0.0f});
 
-    float i = 1.0f;
+    std::vector<Particle*> particles;
+
+    Particle p1(1.0f, {1.0f, 0.0f, 0.0f});
+    Particle p2(1.0f, {0.0f, 1.0f, 0.0f});
+    Particle p3(1.0f, {0.0f, 0.0f, 1.0f});
+    Particle p4(1.0f, {1.0, 0.5f, 0.0f});
+
+    particles.push_back(&p1);
+    particles.push_back(&p2);
+    particles.push_back(&p3);
+    particles.push_back(&p4);
+
+    p1.setPosition({-1.0f, 0.0f, 0.0f});
+    p1.setVelocity({0.01f, 0.0f, 0.0f});
+    
+    p2.setPosition({1.0f, 0.0f, 0.0f});
+    p2.setVelocity({-0.01f, 0.0f, 0.0f});
+
+    p3.setPosition({0.0f, -1.0f, 0.0f});
+    p3.setVelocity({0.0f, 0.01f, 0.0f});
+    
+    p4.setPosition({0.0f, 1.0f, 0.0f});
+    p4.setVelocity({0.0f, -0.01f, 0.0f});
+
     while (window.isRunning()) {
-
-        float j = cos(i);
-
         window.clear();
 
-        polygon1.draw();
-        polygon1.setPosition({0.0f, j, 0.0f});
+        for(Particle* particlePtr : particles) {
+            particlePtr->update();
+        }
 
-        polygon2.draw();
-        polygon2.setPosition({j, 0.0f, 0.0f});
+        collision::checkCollisions(particles);
     
         window.update();
-
-        i -= 0.01;
     }
 
     opengl::terminate();

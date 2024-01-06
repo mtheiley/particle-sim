@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <stdexcept>
+#include <array>
 
 #include <glm/glm.hpp>
 
@@ -14,6 +15,7 @@ struct GLFWwindow;
 class opengl {
 public:
     static constexpr char POSITION_UNIFORM_NAME[] = "offset";
+    static constexpr char COLOUR_UNIFORM_NAME[] = "colour";
 
     using ShaderID = uint32_t;
     using ShaderProgramID = uint32_t;
@@ -59,9 +61,9 @@ public:
 
 private:
     //TODO will need more uniform helpers if we use matricies
-    static void setUniformHelper(UniformID uniformId, float(&values)[4]);
-    static void setUniformHelper(UniformID uniformId, float(&values)[3]);
-    static void setUniformHelper(UniformID uniformId, float(&values)[2]);
+    static void setUniformHelper(UniformID uniformId, std::array<float, 4> values);
+    static void setUniformHelper(UniformID uniformId, std::array<float, 3> values);
+    static void setUniformHelper(UniformID uniformId, std::array<float, 2> values);
 
     static void setUniformHelper(UniformID uniformId, float value);
 
