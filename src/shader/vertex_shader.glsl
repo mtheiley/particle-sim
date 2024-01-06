@@ -1,7 +1,8 @@
 #version 330 core
 layout(location = 0) in vec3 vertexPosition_modelspace;
+uniform vec3 offset;
 void main()
 {
-    gl_Position.xyz = vertexPosition_modelspace;
-    gl_Position.w = 1.0;
+    vec3 position = vertexPosition_modelspace + offset;
+    gl_Position = vec4(position, 1);
 }

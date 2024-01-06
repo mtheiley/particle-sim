@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include "opengl.hpp"
 #include "window.hpp"
@@ -7,6 +8,7 @@
 #include "shader_program.hpp"
 #include "drawable.hpp"
 #include "mesh.hpp"
+#include "mesh_generator.hpp"
 
 int main() {
 
@@ -25,33 +27,29 @@ int main() {
     ShaderProgram shaderProgram({vertexShader.getID(), pixelShader.getID()});
     shaderProgram.selectShaderProgram();
 
-    Mesh mesh1(
-        {{-1.0f, -1.0f, 0.0f},
-        {1.0f, -1.0f, 0.0f},
-        {0.0f,  1.0f, 0.0f}},
-
-        {0, 1, 2}
-    );
-
-    Mesh mesh2(
-        {{-1.0f, 1.0f, 0.0f},
-        {1.0f, 1.0f, 0.0f},
-        {0.0f,  -1.0f, 0.0f}},
-
-        {0, 1, 2}
-    );
+    Mesh mesh4 = mesh_generate::create_polygon(0.2, 10);
     
-    Drawable upTriangle(mesh1);
-    Drawable downTriangle(mesh2);
+    Drawable polygon1(mesh4);
+    Drawable polygon2(mesh4);
+    polygon1.setPosition({0.0f, 1.0f, 0.0f});
+    polygon2.setPosition({1.0f, 0.0f, 0.0f});
 
+    float i = 1.0f;
     while (window.isRunning()) {
-        
+
+        float j = cos(i);
+
         window.clear();
 
-        upTriangle.draw();
-        downTriangle.draw();
-        
+        polygon1.draw();
+        polygon1.setPosition({0.0f, j, 0.0f});
+
+        polygon2.draw();
+        polygon2.setPosition({j, 0.0f, 0.0f});
+    
         window.update();
+
+        i -= 0.01;
     }
 
     opengl::terminate();

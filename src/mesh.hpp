@@ -29,6 +29,10 @@ public:
         setIndexData(indexData);
     }
 
+    Mesh(Mesh&& other) {
+        deepCopy(other);
+    }
+
     Mesh(Mesh& other) {
         deepCopy(other);
     }

@@ -13,10 +13,12 @@ struct GLFWwindow;
 
 class opengl {
 public:
+    static constexpr char POSITION_UNIFORM_NAME[] = "offset";
 
     using ShaderID = uint32_t;
     using ShaderProgramID = uint32_t;
     using DrawableID = uint32_t;
+    using UniformID = uint32_t;
 
     enum class ShaderType {
         VERTEX,
@@ -30,7 +32,15 @@ public:
     static void linkShader(ShaderProgramID shaderProgramId);
     static void selectShaderProgram(ShaderProgramID shaderProgramId);
 
+    static UniformID getUniformId(std::string uniformName);
+    
+    template <typename T>
+    static void setUniformValue(UniformID uniformId, T&& uniformData) {
+        setUniformHelper(uniformId, uniformData);
+    }
+
     static DrawableID createDrawable(Mesh& mesh);
+
     static void draw(DrawableID drawableId, uint32_t totalIndicies);
 
     static void enableDebug();
@@ -48,8 +58,16 @@ public:
     static void terminate();
 
 private:
+    //TODO will need more uniform helpers if we use matricies
+    static void setUniformHelper(UniformID uniformId, float(&values)[4]);
+    static void setUniformHelper(UniformID uniformId, float(&values)[3]);
+    static void setUniformHelper(UniformID uniformId, float(&values)[2]);
+
+    static void setUniformHelper(UniformID uniformId, float value);
+
     opengl();
     static opengl instance;
+    static ShaderProgramID currentlySelectedShader;
 };
 
 #endif //OPEN_GL_H

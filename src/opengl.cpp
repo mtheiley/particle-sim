@@ -19,6 +19,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 opengl opengl::instance = opengl();
+opengl::ShaderProgramID opengl::currentlySelectedShader = 0;
 
 opengl::opengl() {
  
@@ -106,7 +107,28 @@ void opengl::linkShader(opengl::ShaderProgramID shaderProgramId) {
 }
 
 void opengl::selectShaderProgram(opengl::ShaderProgramID shaderProgramId) {
+    currentlySelectedShader = shaderProgramId;
     glUseProgram(shaderProgramId);
+}
+
+opengl::UniformID opengl::getUniformId(std::string uniformName) {
+    return glGetUniformLocation(currentlySelectedShader, uniformName.c_str()); 
+}
+
+void opengl::setUniformHelper(opengl::UniformID uniformId, float(&values)[4]) {
+    glUniform4fv(uniformId, 1, values);
+}
+
+void opengl::setUniformHelper(opengl::UniformID uniformId, float(&values)[3]) {
+    glUniform3fv(uniformId, 1, values);
+}
+
+void opengl::setUniformHelper(opengl::UniformID uniformId, float(&values)[2]) {
+    glUniform2fv(uniformId, 1, values);
+}
+
+void opengl::setUniformHelper(opengl::UniformID uniformId, float value) {
+    glUniform1d(uniformId, value);
 }
 
 opengl::DrawableID opengl::createDrawable(Mesh& mesh) {
