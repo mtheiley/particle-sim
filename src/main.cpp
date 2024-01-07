@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
 
 #include "opengl.hpp"
 #include "window.hpp"
@@ -12,6 +15,16 @@
 #include "particle.hpp"
 #include "collision.hpp"
 #include "gravity.hpp"
+
+void generate_particle(std::vector<Particle*>& particles) {
+    Particle* p = new Particle(1.0f, {0.0f, 0.0f, 1.0f});
+    float xP = ((float)(rand() % 100) / 1000.0f) - 0.1f;
+    float yP = ((float)(rand() % 100) / 1000.0f) + 0.5f;
+
+    p->setPosition({xP, yP, 0.0f});
+
+    particles.push_back(p);
+}
 
 int main() {
 
@@ -32,39 +45,29 @@ int main() {
     ShaderProgram shaderProgram({vertexShader.getID(), pixelShader.getID()});
     shaderProgram.selectShaderProgram();
 
-    Mesh mesh4 = mesh_generate::create_polygon(0.2, 10);
-    
-    //Drawable polygon1(mesh4);
-    //Drawable polygon2(mesh4);
-    //polygon1.setPosition({0.0f, 1.0f, 0.0f});
-    //polygon2.setPosition({1.0f, 0.0f, 0.0f});
-
     std::vector<Particle*> particles;
 
-    Particle p1(1.0f, {1.0f, 0.0f, 0.0f}); //1 RED
-    Particle p2(1.0f, {0.0f, 1.0f, 0.0f}); //2 GREEN
-    Particle p3(1.0f, {0.0f, 0.0f, 1.0f}); //3 BLUE
-    Particle p4(1.0f, {1.0, 0.5f, 0.0f}); //4 ORANGE
+    Particle* p = new Particle(1.0f, {1.0f, 1.0f, 0.0f});
+    particles.push_back(p);
 
-    particles.push_back(&p1);
-    particles.push_back(&p2);
-    particles.push_back(&p3);
-    particles.push_back(&p4);
+    srand(time(NULL));
 
-    p1.setPosition({-0.5f, 0.0f, 0.0f});
-    p1.setVelocity({0.001f, 0.0f, 0.0f});
-    
-    p2.setPosition({0.5f, 0.0f, 0.0f});
-    p2.setVelocity({-0.01f, 0.0f, 0.0f});
+    size_t NUM_PARTICLES = 1000;
+    size_t PARTICLE_SPAWN_DELAY = 500; //milliseconds
 
-    p3.setPosition({0.0f, -0.5f, 0.0f});
-    p3.setVelocity({0.0f, 0.01f, 0.0f});
-    
-    p4.setPosition({0.0f, 0.5f, 0.0f});
-    p4.setVelocity({0.0f, -0.001f, 0.0f});
+    size_t i = 0;
+    std::chrono::steady_clock::time_point prev = std::chrono::steady_clock::now();
 
     while (window.isRunning()) {
         window.clear();
+
+        std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+        auto timeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(prev - now).count();
+        if(i < NUM_PARTICLES && timeElapsed > PARTICLE_SPAWN_DELAY) {
+            generate_particle(particles);
+            prev = now;
+            i++;
+        }
 
         for(Particle* particlePtr : particles) {
             particlePtr->update();

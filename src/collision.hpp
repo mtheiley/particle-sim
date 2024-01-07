@@ -8,20 +8,19 @@
 
 namespace collision {
     
-    float ENERGY_LOSS = 0.2; //10% is lost
+    float ENERGY_LOSS = 0.01;
+    float COLLIDE_ENERGY_LOSS = 0.01;
 
     float calculateVelocity(float unitDirection, float speed) {  
         float ABSOLUTE_LIMIT = 0.0000000000000001;
 
         float total = unitDirection * speed;
         float totalAbs = total;
-        //std::cout << "ABS: " << totalAbs << std::endl;
         if(total < 0) {
             totalAbs = -total;
         }
         
         if(totalAbs < ABSOLUTE_LIMIT) {
-            //std::cout << "ZERO!" << std::endl;
             total = 0;
         }
         return total;
@@ -46,26 +45,12 @@ namespace collision {
         const auto& lV = left.getVelocity();
         const auto& rV = right.getVelocity();
         
-        // float lVSpeed = sqrt(lV[0]*lV[0] + lV[1]*lV[1] + lV[2]*lV[2]);
-        // float rVSpeed = sqrt(rV[0]*rV[0] + rV[1]*rV[1] + rV[2]*rV[2]);
-
-        // float ulV[3] = {
-        //     lV[0]/lVSpeed,
-        //     lV[1]/lVSpeed,
-        //     lV[2]/lVSpeed
-        // };
-
-        // float urV[3] = {
-        //     rV[0]/rVSpeed,
-        //     rV[1]/rVSpeed,
-        //     rV[2]/rVSpeed
-        // };
         std::array<float, 3> ulV = calculateUnitVector(lV);
         std::array<float, 3> urV = calculateUnitVector(rV);
 
         const auto& lP = left.getPosition();
         const auto& rP = right.getPosition();
-        const float offset = overlapDistance/1.00001;
+        const float offset = overlapDistance*1.1;
 
         left.setPosition({
             lP[0] - ulV[0]*(offset),
@@ -97,36 +82,17 @@ namespace collision {
             rP[2] - lP[2]
         };
 
-        // float nlVSpeed = sqrt(nlV[0]*nlV[0] + nlV[1]*nlV[1] + nlV[2]*nlV[2]);
-        // float nrVSpeed = sqrt(nrV[0]*nrV[0] + nrV[1]*nrV[1] + nrV[2]*nrV[2]);
-
-        // float unlV[3] = {
-        //     nlV[0]/nlVSpeed,
-        //     nlV[1]/nlVSpeed,
-        //     nlV[2]/nlVSpeed
-        // };
-
-        // float unrV[3] = {
-        //     nrV[0]/nrVSpeed,
-        //     nrV[1]/nrVSpeed,
-        //     nrV[2]/nrVSpeed
-        // };
-
         std::array<float, 3> unlV = calculateUnitVector(nlV);
         std::array<float, 3> unrV = calculateUnitVector(nrV);
 
         const auto& lV = left.getVelocity();
         const auto& rV = right.getVelocity();
 
-        //std::cout << "IN!!!" << std::endl;
-        //std::cout << "L: " << left.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
-        //std::cout << "R: " << right.getId() << " [" << rV[0] << ", " << rV[1] << ", " << rV[2] << "]" << std::endl;
-
         float lVSpeed = sqrt(lV[0]*lV[0] + lV[1]*lV[1] + lV[2]*lV[2]);
         float rVSpeed = sqrt(rV[0]*rV[0] + rV[1]*rV[1] + rV[2]*rV[2]);
 
-        float lspeed = ((lVSpeed + rVSpeed) / 2) * (1.0f - ENERGY_LOSS);
-        float rspeed = ((rVSpeed + lVSpeed) / 2) * (1.0f - ENERGY_LOSS);
+        float lspeed = ((lVSpeed + rVSpeed) / 2) * (1.0f - COLLIDE_ENERGY_LOSS);
+        float rspeed = ((rVSpeed + lVSpeed) / 2) * (1.0f - COLLIDE_ENERGY_LOSS);
 
         left.setVelocity({
             calculateVelocity(unlV[0], lspeed),
@@ -139,10 +105,6 @@ namespace collision {
             calculateVelocity(unrV[1], rspeed),
             calculateVelocity(unrV[2], rspeed)
         });
-
-        //std::cout << "OUT!!!" << std::endl;
-        //std::cout << "L: " << left.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
-        //std::cout << "R: " << right.getId() << " [" << rV[0] << ", " << rV[1] << ", " << rV[2] << "]" << std::endl;
     }
 
     float calculateDistance(const std::array<float, 3>& left, const std::array<float, 3>& right) {
@@ -159,7 +121,7 @@ namespace collision {
         
         bool collided = (distance < collideDistance) && left != right;
         if(collided) {
-            moveParticlesAppart(left, right, collideDistance-distance);
+            //moveParticlesAppart(left, right, collideDistance-distance); //OPTIONAL - leads to weird jumpy behaviour
             handleCollide(left, right);
         }
     }
@@ -180,7 +142,6 @@ namespace collision {
         float offset = 0.0000000000;
 
         const auto& lV = particle.getPosition();
-        //std::cout << "L: " << particle.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
 
         if(pos[0] + r > width) {
             nVel[0] = -vel[0];

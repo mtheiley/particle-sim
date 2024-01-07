@@ -8,7 +8,7 @@ namespace gravity {
 
     float calculateAcceleration(float init) {
         float TERMINAL_VELOCITY = 0.5f;
-        float ACCELERATION = 0.0001f;
+        float ACCELERATION = 0.001f;
 
         float total = init - ACCELERATION;
         if(total < -TERMINAL_VELOCITY) {
