@@ -162,6 +162,45 @@ namespace collision {
         }
     }
 
+    void checkCollideBoundary(Particle& particle, float width, float height) {
+        const auto& pos = particle.getPosition();
+        const float r = particle.getRadius();
+        const auto& vel = particle.getVelocity();
+        
+        float nVel[3] = {
+            vel[0], vel[1], vel[2]
+        };
+
+        float nPos[3] = {
+            pos[0], pos[1], pos[2]
+        };
+
+        if(pos[0] + r > width) {
+            nVel[0] = -vel[0];
+            nPos[0] += -r;
+        } else if (pos[0] - r < -width) {
+            nVel[0] = -vel[0];
+            nPos[0] += +r;
+        }
+
+        if(pos[1] + r > height) {
+            nVel[1] = -vel[1];
+            nPos[1] += -r;
+        } else if (pos[1] - r < -height) {
+            nVel[1] = -vel[1];
+            nPos[1] += +r;
+        }
+
+        particle.setPosition(nPos);
+        particle.setVelocity(nVel);
+    }
+
+    void checkOutOfBounds(std::vector<Particle*> particles, float width, float height) {
+        for(Particle* current : particles) {
+            checkCollideBoundary(*current, width, height);
+        }
+    }
+
     void checkCollisions(std::vector<Particle*> particles) {
         for(Particle* current : particles) {
             for(Particle * other : particles) {

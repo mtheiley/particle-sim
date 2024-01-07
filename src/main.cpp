@@ -14,7 +14,9 @@
 
 int main() {
 
-    Window window(640, 480, "Particle Sim");
+    size_t width = 640;
+    size_t height = 480;
+    Window window(width, height, "Particle Sim");
     window.selectWindow();
 
     opengl::loadGlad();
@@ -48,16 +50,16 @@ int main() {
     particles.push_back(&p3);
     particles.push_back(&p4);
 
-    p1.setPosition({-1.0f, 0.0f, 0.0f});
-    p1.setVelocity({0.001f, 0.0f, 0.0f});
+    p1.setPosition({-0.5f, 0.0f, 0.0f});
+    p1.setVelocity({0.01f, 0.0f, 0.0f});
     
-    p2.setPosition({1.0f, 0.0f, 0.0f});
-    p2.setVelocity({-0.001f, 0.0f, 0.0f});
+    p2.setPosition({0.5f, 0.0f, 0.0f});
+    p2.setVelocity({-0.01f, 0.0f, 0.0f});
 
-    p3.setPosition({0.0f, -1.0f, 0.0f});
-    p3.setVelocity({0.0f, 0.001f, 0.0f});
+    p3.setPosition({0.0f, -0.5f, 0.0f});
+    p3.setVelocity({0.0f, 0.01f, 0.0f});
     
-    p4.setPosition({0.0f, 1.0f, 0.0f});
+    p4.setPosition({0.0f, 0.5f, 0.0f});
     //p4.setVelocity({0.0f, -0.001f, 0.0f});
 
     while (window.isRunning()) {
@@ -68,6 +70,7 @@ int main() {
         }
 
         collision::checkCollisions(particles);
+        collision::checkOutOfBounds(particles, 1.0f, 1.0f);
     
         window.update();
     }
