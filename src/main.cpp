@@ -38,10 +38,10 @@ int main() {
 
     std::vector<Particle*> particles;
 
-    Particle p1(1.0f, {1.0f, 0.0f, 0.0f});
-    Particle p2(1.0f, {0.0f, 1.0f, 0.0f});
-    Particle p3(1.0f, {0.0f, 0.0f, 1.0f});
-    Particle p4(1.0f, {1.0, 0.5f, 0.0f});
+    Particle p1(1.0f, {1.0f, 0.0f, 0.0f}); //1 RED
+    Particle p2(1.0f, {0.0f, 1.0f, 0.0f}); //2 GREEN
+    Particle p3(1.0f, {0.0f, 0.0f, 1.0f}); //3 BLUE
+    Particle p4(1.0f, {1.0, 0.5f, 0.0f}); //4 ORANGE
 
     particles.push_back(&p1);
     particles.push_back(&p2);
@@ -49,16 +49,16 @@ int main() {
     particles.push_back(&p4);
 
     p1.setPosition({-1.0f, 0.0f, 0.0f});
-    p1.setVelocity({0.01f, 0.0f, 0.0f});
+    p1.setVelocity({0.001f, 0.0f, 0.0f});
     
     p2.setPosition({1.0f, 0.0f, 0.0f});
-    p2.setVelocity({-0.01f, 0.0f, 0.0f});
+    p2.setVelocity({-0.001f, 0.0f, 0.0f});
 
     p3.setPosition({0.0f, -1.0f, 0.0f});
-    p3.setVelocity({0.0f, 0.01f, 0.0f});
+    p3.setVelocity({0.0f, 0.001f, 0.0f});
     
     p4.setPosition({0.0f, 1.0f, 0.0f});
-    p4.setVelocity({0.0f, -0.01f, 0.0f});
+    //p4.setVelocity({0.0f, -0.001f, 0.0f});
 
     while (window.isRunning()) {
         window.clear();

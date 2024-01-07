@@ -63,6 +63,10 @@ public:
         return velocity;
     }
 
+    size_t getId() {
+        return id;
+    }
+
     void update() {
         const auto& position = drawable.getPosition(); 
         drawable.setPosition({
