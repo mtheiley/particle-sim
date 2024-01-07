@@ -13,7 +13,7 @@ private:
     static constexpr size_t POSITION_SIZE = 3;
     static constexpr size_t VELOCITY_SIZE = 3;
     static constexpr size_t PARTICLE_ROUNDNESS = 10;
-    static constexpr float PARTICLE_SIZE = 0.01;
+    static constexpr float PARTICLE_SIZE = 0.004;
 
     std::array<float, 3> velocity = {0.0f, 0.0f, 0.0f};
     float mass = 0;
