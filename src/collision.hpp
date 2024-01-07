@@ -8,18 +8,20 @@
 
 namespace collision {
     
+    float ENERGY_LOSS = 0.2; //10% is lost
+
     float calculateVelocity(float unitDirection, float speed) {  
         float ABSOLUTE_LIMIT = 0.0000000000000001;
 
         float total = unitDirection * speed;
         float totalAbs = total;
-        std::cout << "ABS: " << totalAbs << std::endl;
+        //std::cout << "ABS: " << totalAbs << std::endl;
         if(total < 0) {
             totalAbs = -total;
         }
         
         if(totalAbs < ABSOLUTE_LIMIT) {
-            std::cout << "ZERO!" << std::endl;
+            //std::cout << "ZERO!" << std::endl;
             total = 0;
         }
         return total;
@@ -63,17 +65,18 @@ namespace collision {
 
         const auto& lP = left.getPosition();
         const auto& rP = right.getPosition();
+        const float offset = overlapDistance/1.00001;
 
         left.setPosition({
-            lP[0] - ulV[0]*(overlapDistance),
-            lP[1] - ulV[1]*(overlapDistance),
-            lP[2] - ulV[2]*(overlapDistance)
+            lP[0] - ulV[0]*(offset),
+            lP[1] - ulV[1]*(offset),
+            lP[2] - ulV[2]*(offset)
         });
 
         right.setPosition({
-            rP[0] - urV[0]*(overlapDistance),
-            rP[1] - urV[1]*(overlapDistance),
-            rP[2] - urV[2]*(overlapDistance)
+            rP[0] - urV[0]*(offset),
+            rP[1] - urV[1]*(offset),
+            rP[2] - urV[2]*(offset)
         });
 
     }
@@ -115,14 +118,13 @@ namespace collision {
         const auto& lV = left.getVelocity();
         const auto& rV = right.getVelocity();
 
-        std::cout << "IN!!!" << std::endl;
-        std::cout << "L: " << left.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
-        std::cout << "R: " << right.getId() << " [" << rV[0] << ", " << rV[1] << ", " << rV[2] << "]" << std::endl;
+        //std::cout << "IN!!!" << std::endl;
+        //std::cout << "L: " << left.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
+        //std::cout << "R: " << right.getId() << " [" << rV[0] << ", " << rV[1] << ", " << rV[2] << "]" << std::endl;
 
         float lVSpeed = sqrt(lV[0]*lV[0] + lV[1]*lV[1] + lV[2]*lV[2]);
         float rVSpeed = sqrt(rV[0]*rV[0] + rV[1]*rV[1] + rV[2]*rV[2]);
 
-        float ENERGY_LOSS = 0.2; //10% is lost
         float lspeed = ((lVSpeed + rVSpeed) / 2) * (1.0f - ENERGY_LOSS);
         float rspeed = ((rVSpeed + lVSpeed) / 2) * (1.0f - ENERGY_LOSS);
 
@@ -138,9 +140,9 @@ namespace collision {
             calculateVelocity(unrV[2], rspeed)
         });
 
-        std::cout << "OUT!!!" << std::endl;
-        std::cout << "L: " << left.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
-        std::cout << "R: " << right.getId() << " [" << rV[0] << ", " << rV[1] << ", " << rV[2] << "]" << std::endl;
+        //std::cout << "OUT!!!" << std::endl;
+        //std::cout << "L: " << left.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
+        //std::cout << "R: " << right.getId() << " [" << rV[0] << ", " << rV[1] << ", " << rV[2] << "]" << std::endl;
     }
 
     float calculateDistance(const std::array<float, 3>& left, const std::array<float, 3>& right) {
@@ -175,20 +177,29 @@ namespace collision {
             pos[0], pos[1], pos[2]
         };
 
+        float offset = 0.0000000000;
+
+        const auto& lV = particle.getPosition();
+        //std::cout << "L: " << particle.getId() << " [" << lV[0] << ", " << lV[1] << ", " << lV[2] << "]" << std::endl;
+
         if(pos[0] + r > width) {
             nVel[0] = -vel[0];
-            nPos[0] += -r;
+            nVel[0] *= 1.0f - ENERGY_LOSS;
+            nPos[0] = width - (r + offset);
         } else if (pos[0] - r < -width) {
             nVel[0] = -vel[0];
-            nPos[0] += +r;
+            nVel[0] *= 1.0f - ENERGY_LOSS;
+            nPos[0] = -width + (r + offset);
         }
 
         if(pos[1] + r > height) {
             nVel[1] = -vel[1];
-            nPos[1] += -r;
+            nVel[1] *= 1.0f - ENERGY_LOSS;
+            nPos[1] = height - (r + offset);
         } else if (pos[1] - r < -height) {
             nVel[1] = -vel[1];
-            nPos[1] += +r;
+            nVel[1] *= 1.0f - ENERGY_LOSS;
+            nPos[1] = -height + (r + offset);
         }
 
         particle.setPosition(nPos);

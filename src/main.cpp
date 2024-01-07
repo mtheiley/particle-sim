@@ -11,6 +11,7 @@
 #include "mesh_generator.hpp"
 #include "particle.hpp"
 #include "collision.hpp"
+#include "gravity.hpp"
 
 int main() {
 
@@ -51,7 +52,7 @@ int main() {
     particles.push_back(&p4);
 
     p1.setPosition({-0.5f, 0.0f, 0.0f});
-    p1.setVelocity({0.01f, 0.0f, 0.0f});
+    p1.setVelocity({0.001f, 0.0f, 0.0f});
     
     p2.setPosition({0.5f, 0.0f, 0.0f});
     p2.setVelocity({-0.01f, 0.0f, 0.0f});
@@ -60,7 +61,7 @@ int main() {
     p3.setVelocity({0.0f, 0.01f, 0.0f});
     
     p4.setPosition({0.0f, 0.5f, 0.0f});
-    //p4.setVelocity({0.0f, -0.001f, 0.0f});
+    p4.setVelocity({0.0f, -0.001f, 0.0f});
 
     while (window.isRunning()) {
         window.clear();
@@ -71,7 +72,8 @@ int main() {
 
         collision::checkCollisions(particles);
         collision::checkOutOfBounds(particles, 1.0f, 1.0f);
-    
+        gravity::apply(particles);
+
         window.update();
     }
 
